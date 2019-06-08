@@ -18,6 +18,7 @@ namespace Poczta2
         public Mutex mutSort;
         public Skrzynka skrzynkaDoRozladunku;
         public Dostawczak dostawczakDoZaladunku;
+        public Dostawczak DostawczakDoRozladunku;
 
 
         public void PrzyjmijPrzesylke()
@@ -120,6 +121,23 @@ namespace Poczta2
 
         }
 
+        public void RozladujDostawczak()
+        {
+            DostawczakDoRozladunku.mutDos.WaitOne();
+            if(DostawczakDoRozladunku.zaladunek.Count!=0)
+            {
+                Thread.Sleep(100);
+                Przesylka tymczasowa = DostawczakDoRozladunku.zaladunek.Dequeue();
+                DostawczakDoRozladunku.mutDos.ReleaseMutex();
+                Thread.Sleep(100 + (int)(tymczasowa.masa * 10));
+            }
+            else
+            {
+                DostawczakDoRozladunku.mutDos.ReleaseMutex();
+                coMaszRobic = Zajety.wolny;
+            }
+        }
+
         public void Pracuj()
         {
             while(true)
@@ -137,6 +155,9 @@ namespace Poczta2
                         break;
                     case Zajety.laduje:
                         LadujDostawczak();
+                        break;
+                    case Zajety.rozladowuje:
+                        RozladujDostawczak();
                         break;
                     default:
                         break;

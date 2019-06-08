@@ -28,15 +28,36 @@ namespace Poczta2
                 klients.Enqueue(new Klient());
             }
 
+            Przesylka przykladowa;
+            przykladowa.masa = 5.0f;
+            przykladowa.miasto = 'E';
+            przykladowa.typ = false;
+
             List<Dostawczak> dostawczaks = new List<Dostawczak>();
             dostawczaks.Add(new Dostawczak());
             dostawczaks.Last().miasto = 'A';
+            for(int i = 0; i < 35 ; i++)
+            {
+                dostawczaks.Last().zaladunek.Enqueue(przykladowa);
+            }
             dostawczaks.Add(new Dostawczak());
             dostawczaks.Last().miasto = 'B';
+            for (int i = 0; i < 35; i++)
+            {
+                dostawczaks.Last().zaladunek.Enqueue(przykladowa);
+            }
             dostawczaks.Add(new Dostawczak());
             dostawczaks.Last().miasto = 'C';
+            for (int i = 0; i < 35; i++)
+            {
+                dostawczaks.Last().zaladunek.Enqueue(przykladowa);
+            }
             dostawczaks.Add(new Dostawczak());
             dostawczaks.Last().miasto = 'D';
+            for (int i = 0; i < 35; i++)
+            {
+                dostawczaks.Last().zaladunek.Enqueue(przykladowa);
+            }
             //dostawczaks.Add(new Dostawczak());
             //dostawczaks.Last().miasto = 'E';
 
@@ -92,7 +113,8 @@ namespace Poczta2
             Kierowniczka kierowniczka = new Kierowniczka(okienka, skrzynkas);
             kierowniczka.pracownicy = pracowniks;
             kierowniczka.klienci = klients;
-            kierowniczka.dostawczakiDoZaladunku = dostawczaks;
+            //kierowniczka.dostawczakiDoZaladunku = dostawczaks;
+            kierowniczka.dostawczakiDoRozladunku = dostawczaks;
             kierowniczka.miasto = 'E';
             Thread kier = new Thread(new ThreadStart(kierowniczka.Czuwaj));
             kier.Start();
@@ -126,9 +148,12 @@ namespace Poczta2
                 else
                     Console.Write(" S3(z):");
 
-                Console.WriteLine(" " + okienka[0].skrzynka.Count + " " + okienka[1].skrzynka.Count + " " + skrzynkas[0].zaladunek.Count);
-                //Console.WriteLine(" A:" + dostawczaks.ElementAt(0).zaladunek.Count + " B:" + dostawczaks.ElementAt(1).zaladunek.Count);
-
+                //Console.WriteLine(" " + okienka[0].skrzynka.Count + " " + okienka[1].skrzynka.Count + " " + skrzynkas[0].zaladunek.Count);
+                if(kierowniczka.dostawczakiDoZaladunku.Count==4)
+                    Console.Write(" A:" + dostawczaks.ElementAt(0).zaladunek.Count + " B:" + dostawczaks.ElementAt(1).zaladunek.Count + " C:" + dostawczaks.ElementAt(2).zaladunek.Count + " D:" + dostawczaks.ElementAt(3).zaladunek.Count);
+                if (kierowniczka.dostawczakiDoRozladunku.Count == 4)
+                    Console.Write(" RA:" + dostawczaks.ElementAt(0).zaladunek.Count + " RB:" + dostawczaks.ElementAt(1).zaladunek.Count + " RC:" + dostawczaks.ElementAt(2).zaladunek.Count + " RD:" + dostawczaks.ElementAt(3).zaladunek.Count);
+                Console.WriteLine();
             }
             Console.ReadKey();
         }

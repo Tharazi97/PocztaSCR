@@ -16,6 +16,7 @@ namespace Poczta2
         public int otwarteOkienka = 0;
         public Skrzynka[] skrzynki;
         public List<Dostawczak> dostawczakiDoZaladunku = new List<Dostawczak>();
+        public List<Dostawczak> dostawczakiDoRozladunku = new List<Dostawczak>();
 
         public Kierowniczka(Okienko[] oki, Skrzynka[] skr)
         {
@@ -57,8 +58,8 @@ namespace Poczta2
                         if (tymczasowy != null)
                         {
                             //Console.WriteLine("otworzylAM2");
-                            okienka[otwarteOkienka].zajete = true;
                             tymczasowy.okienko = okienka[otwarteOkienka];
+                            okienka[otwarteOkienka].zajete = true;
                             Thread.MemoryBarrier();
                             otwarteOkienka++;
                             tymczasowy.coMaszRobic = Zajety.przyjmuje;
@@ -102,7 +103,7 @@ namespace Poczta2
             //Console.WriteLine("sprawdzam czy zaladowac");
             if(dostawczakiDoZaladunku.Count!=0)
             {
-                Pracownik tymczasowy = pracownicy.Find(x => x.coMaszRobic != Zajety.przyjmuje && x.coMaszRobic != Zajety.zamknijOkienko && x.coMaszRobic != Zajety.laduje);
+                Pracownik tymczasowy = pracownicy.Find(x => x.coMaszRobic != Zajety.przyjmuje && x.coMaszRobic != Zajety.zamknijOkienko && x.coMaszRobic != Zajety.laduje && x.coMaszRobic != Zajety.rozladowuje);
                 if (tymczasowy != null)
                 {
                     for (int i = 0; i < skrzynki.Length; i++)
@@ -129,6 +130,31 @@ namespace Poczta2
 
         }
 
+        public void SprawdzCzyRozladowac()
+        {
+            if (dostawczakiDoRozladunku.Count != 0)
+            {
+                Pracownik tymczasowy = pracownicy.Find(x => x.coMaszRobic == Zajety.wolny || x.coMaszRobic == Zajety.laduje || x.coMaszRobic == Zajety.sortuje);
+                if(tymczasowy != null)
+                {
+                    foreach(var dost in dostawczakiDoRozladunku)
+                    {
+                        if(dost.zaladunek.Count != 0)
+                        {
+                            try
+                            {
+                                tymczasowy.DostawczakDoRozladunku = dost;
+                                Thread.MemoryBarrier();
+                                tymczasowy.coMaszRobic = Zajety.rozladowuje;
+                            }
+                            finally { }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         public void Czuwaj()
         {
             while(true)
@@ -136,6 +162,7 @@ namespace Poczta2
                 SprawdzKolejke();
                 SprawdzCzySortowac();
                 SprawdzCzyZaladowac();
+                SprawdzCzyRozladowac();
             }
             
         }
