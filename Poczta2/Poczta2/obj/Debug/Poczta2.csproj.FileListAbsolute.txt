@@ -1,0 +1,7 @@
+D:\GitHub\Poczta2\Poczta2\bin\Debug\Poczta2.exe.config
+D:\GitHub\Poczta2\Poczta2\bin\Debug\Poczta2.exe
+D:\GitHub\Poczta2\Poczta2\bin\Debug\Poczta2.pdb
+D:\GitHub\Poczta2\Poczta2\obj\Debug\Poczta2.csprojAssemblyReference.cache
+D:\GitHub\Poczta2\Poczta2\obj\Debug\Poczta2.csproj.CoreCompileInputs.cache
+D:\GitHub\Poczta2\Poczta2\obj\Debug\Poczta2.exe
+D:\GitHub\Poczta2\Poczta2\obj\Debug\Poczta2.pdb
