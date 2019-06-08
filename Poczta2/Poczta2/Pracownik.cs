@@ -184,6 +184,7 @@ namespace Poczta2
                         break;
                     case Zajety.wolny:
                         coRobie = Zajety.wolny;
+                        Thread.Sleep(100);
                         break;
                     default:
                         break;

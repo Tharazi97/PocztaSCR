@@ -198,6 +198,7 @@ namespace Poczta2
                     }
                     
                 }
+                Thread.Sleep(100);
             }
             
         }

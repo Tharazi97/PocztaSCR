@@ -54,7 +54,7 @@ namespace Poczta2
             kierowniczka.dostawczakiDoRozladunku = dostawczakiDoRozladunku;
             kierowniczka.dostawczakiDoZaladunku = dostawczakiDoZaladunku;
 
-            kier = new Thread(new ThreadStart(kierowniczka.Czuwaj));
+            
             lock(miasta)
             {
                 miasta.Add(this);
@@ -63,13 +63,16 @@ namespace Poczta2
 
         public void Symuluj()
         {
-            while (DateTime.Now.Minute % 10 != 1);
+            while (DateTime.Now.Minute % 10 != 2);
             while (true)
             {
                 time = DateTime.Now;
 
-                if ((time.Minute % 10 == 1) && !dziewiata)// jest 9 otwieramy poczte
+                if ((time.Minute % 10 == 2) && !dziewiata)// jest 9 otwieramy poczte
                 {
+                    kierowniczka.koniec = false;
+                    kierowniczka.zamknij = false;
+                    Thread.MemoryBarrier();
                     siedemnasta = false;
                     szesnasta = false;
                     dziewiata = true;
@@ -80,7 +83,7 @@ namespace Poczta2
                         threads.Add(new Thread(new ThreadStart(pracownicy.Last().Pracuj)));
                         threads.Last().Start();
                     }
-
+                    kier = new Thread(new ThreadStart(kierowniczka.Czuwaj));
                     kier.Start();
                 }
 
@@ -111,6 +114,7 @@ namespace Poczta2
                     }
                     pracownicy.Clear();
                     klienci.Clear();
+                    threads.Clear();
 
                     siedemnasta = true;
                     szesnasta = false;
@@ -137,17 +141,19 @@ namespace Poczta2
                     //skrzynki.Find(x => x.miasto == nazwa).zaladunek.Clear();
 
                     //Console.WriteLine("zamkniete");
+                    Klient.ilosc = 0;
+
                 }
 
 
-                if ((rnd.Next(10) == 0) && (time.Minute % 10 > 0) && (time.Minute % 10 < 6))
+                if ((rnd.Next(6) == 0) && (time.Minute % 10 > 0) && (time.Minute % 10 < 6))
                 {
                     mutKlienci.WaitOne();
                     klienci.Enqueue(new Klient());
                     mutKlienci.ReleaseMutex();
                 }
 
-                Thread.Sleep(200);
+                Thread.Sleep(100);
 
             }
         }

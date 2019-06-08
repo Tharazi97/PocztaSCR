@@ -157,7 +157,9 @@ namespace Poczta2
                 //}
 
                 Thread.Sleep(100);
-                
+                Console.Write("P:" + miasto1.pracownicy.Count);
+                Console.Write(" K:" + miasto1.klienci.Count);
+
                 if (miasto1.okienka[0].zajete == true)
                     Console.Write(" S1(o):" + miasto1.okienka[0].klientID);
                 else
@@ -175,9 +177,9 @@ namespace Poczta2
 
                 //Console.WriteLine(" " + okienka[0].skrzynka.Count + " " + okienka[1].skrzynka.Count + " " + skrzynkas[0].zaladunek.Count);
                 if(miasto1.kierowniczka.dostawczakiDoZaladunku.Count==4)
-                    Console.Write(" A:" + miasto1.dostawczakiDoZaladunku.ElementAt(0).zaladunek.Count + " B:" + miasto1.dostawczakiDoZaladunku.ElementAt(1).zaladunek.Count + " C:" + miasto1.dostawczakiDoZaladunku.ElementAt(2).zaladunek.Count + " D:" + miasto1.dostawczakiDoZaladunku.ElementAt(3).zaladunek.Count);
+                    Console.Write(" OUT:" + miasto1.dostawczakiDoZaladunku.ElementAt(0).miasto + ":" + miasto1.dostawczakiDoZaladunku.ElementAt(0).zaladunek.Count +" "+ miasto1.dostawczakiDoZaladunku.ElementAt(1).miasto + ":" + miasto1.dostawczakiDoZaladunku.ElementAt(1).zaladunek.Count + " " + miasto1.dostawczakiDoZaladunku.ElementAt(2).miasto + ":" + miasto1.dostawczakiDoZaladunku.ElementAt(2).zaladunek.Count + " " + miasto1.dostawczakiDoZaladunku.ElementAt(3).miasto + ":" + miasto1.dostawczakiDoZaladunku.ElementAt(3).zaladunek.Count);
                 if (miasto1.kierowniczka.dostawczakiDoRozladunku.Count == 4)
-                    Console.Write(" RA:" + miasto1.dostawczakiDoRozladunku.ElementAt(0).zaladunek.Count + " RB:" + miasto1.dostawczakiDoRozladunku.ElementAt(1).zaladunek.Count + " RC:" + miasto1.dostawczakiDoRozladunku.ElementAt(2).zaladunek.Count + " RD:" + miasto1.dostawczakiDoRozladunku.ElementAt(3).zaladunek.Count);
+                    Console.Write(" 1:" + miasto1.dostawczakiDoRozladunku.ElementAt(0).zaladunek.Count + " 2:" + miasto1.dostawczakiDoRozladunku.ElementAt(1).zaladunek.Count + " 3:" + miasto1.dostawczakiDoRozladunku.ElementAt(2).zaladunek.Count + " 4:" + miasto1.dostawczakiDoRozladunku.ElementAt(3).zaladunek.Count);
                 Console.WriteLine();
             }
             Console.ReadKey();
