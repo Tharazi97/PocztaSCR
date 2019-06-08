@@ -63,12 +63,12 @@ namespace Poczta2
 
         public void Symuluj()
         {
-            while (DateTime.Now.Minute % 10 != 4);
+            //while (DateTime.Now.Minute % 10 != 1);
             while (true)
             {
                 time = DateTime.Now;
 
-                if ((time.Minute % 10 == 4) && !dziewiata)// jest 9 otwieramy poczte
+                if (/*(time.Minute % 10 == 1) &&*/!dziewiata)// jest 9 otwieramy poczte
                 {
                     siedemnasta = false;
                     szesnasta = false;
@@ -87,7 +87,7 @@ namespace Poczta2
 
 
 
-                if ((rnd.Next(10) == 0) && (time.Minute % 10 > 0) && (time.Minute % 10 < 6))
+                if ((rnd.Next(10) == 0) && (time.Minute % 10 > 0) && (time.Minute % 10 < 10))
                 {
                     mutKlienci.WaitOne();
                     klienci.Enqueue(new Klient());

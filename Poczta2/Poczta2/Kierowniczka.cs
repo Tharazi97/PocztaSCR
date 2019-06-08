@@ -32,6 +32,8 @@ namespace Poczta2
                 Pracownik tymczasowy = pracownicy.Find(x => x.coMaszRobic != Zajety.przyjmuje && x.coMaszRobic != Zajety.zamknijOkienko);
                 if (tymczasowy != null)
                 {
+                    tymczasowy.coMaszRobic = Zajety.wolny;
+                    while (tymczasowy.coRobie != Zajety.wolny) ;
                     if(okienka[otwarteOkienka].zajete== true)
                     {
                         //Console.WriteLine("musze poczekac");               
@@ -57,6 +59,8 @@ namespace Poczta2
                         Pracownik tymczasowy = pracownicy.Find(x => x.coMaszRobic != Zajety.przyjmuje && x.coMaszRobic != Zajety.zamknijOkienko);
                         if (tymczasowy != null)
                         {
+                            tymczasowy.coMaszRobic = Zajety.wolny;
+                            while (tymczasowy.coRobie != Zajety.wolny) ;
                             //Console.WriteLine("otworzylAM2");
                             tymczasowy.okienko = okienka[otwarteOkienka];
                             okienka[otwarteOkienka].zajete = true;
@@ -69,10 +73,13 @@ namespace Poczta2
             }
             if ((klienci.Count() < otwarteOkienka) && (otwarteOkienka > 0))
             {
+
                 //Console.WriteLine("probuje zamknac");
                 Pracownik tymczasowy = pracownicy.Find(x => x.okienko == okienka[otwarteOkienka - 1]);
                 if (tymczasowy != null)
                 {
+                    tymczasowy.coMaszRobic = Zajety.wolny;
+                    while (tymczasowy.coRobie != Zajety.wolny) ;
                     //Console.WriteLine("zamknelam");
                     tymczasowy.coMaszRobic = Zajety.zamknijOkienko;
                     otwarteOkienka--;

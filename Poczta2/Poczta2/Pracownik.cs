@@ -15,6 +15,7 @@ namespace Poczta2
         public Queue<Klient> klienci;
         public Skrzynka[] skrzynki;
         public volatile Zajety coMaszRobic = Zajety.wolny;
+        public volatile Zajety coRobie = Zajety.wolny;
         public Mutex mutSort;
         public Skrzynka skrzynkaDoRozladunku;
         public Dostawczak dostawczakDoZaladunku;
@@ -31,7 +32,7 @@ namespace Poczta2
 
         public void PrzyjmijPrzesylke()
         {
-
+            coRobie = Zajety.przyjmuje;
             bool przyjal = false;
             mutKlienci.WaitOne();
             if (klienci.Count != 0)
@@ -58,18 +59,21 @@ namespace Poczta2
 
         public void ZamknijOkienko()
         {
-            if(okienko!=null)
+            coRobie = Zajety.zamknijOkienko;
+            if(okienko != null)
             {
                 okienko.zajete = false;
                 Thread.MemoryBarrier();
                 okienko = null;
                 Thread.MemoryBarrier();
-                coMaszRobic = Zajety.wolny;
             }
+            else
+                coMaszRobic = Zajety.wolny;
         }
 
         public void Sortuj()
         {
+            coRobie = Zajety.sortuje;
             Okienko tymczasowe = null;
             Przesylka tymczasowa;
             mutSort.WaitOne();
@@ -111,6 +115,7 @@ namespace Poczta2
 
         public void LadujDostawczak()
         {
+            coRobie = Zajety.laduje;
             Przesylka tymczasowa;
             skrzynkaDoRozladunku.mutSkrz.WaitOne();
             if(skrzynkaDoRozladunku.zaladunek.Count!=0)
@@ -138,6 +143,7 @@ namespace Poczta2
 
         public void RozladujDostawczak()
         {
+            coRobie = Zajety.rozladowuje;
             dostawczakDoRozladunku.mutDos.WaitOne();
             if(dostawczakDoRozladunku.zaladunek.Count!=0)
             {
@@ -177,7 +183,7 @@ namespace Poczta2
                         RozladujDostawczak();
                         break;
                     case Zajety.wolny:
-                        ZamknijOkienko();
+                        coRobie = Zajety.wolny;
                         break;
                     default:
                         break;
