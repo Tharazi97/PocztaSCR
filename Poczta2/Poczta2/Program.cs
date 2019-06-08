@@ -126,9 +126,23 @@ namespace Poczta2
 
 
             Miasto miasto1 = new Miasto('E', 3, 5);
+            Miasto miasto2 = new Miasto('A', 4, 5);
+            Miasto miasto3 = new Miasto('B', 2, 5);
+            Miasto miasto4 = new Miasto('C', 3, 5);
+            Miasto miasto5 = new Miasto('D', 3, 5);
 
-            Thread thread = new Thread(new ThreadStart(miasto1.Symuluj));
-            thread.Start();
+            Thread thread1 = new Thread(new ThreadStart(miasto1.Symuluj));
+            Thread thread2 = new Thread(new ThreadStart(miasto2.Symuluj));
+            Thread thread3 = new Thread(new ThreadStart(miasto3.Symuluj));
+            Thread thread4 = new Thread(new ThreadStart(miasto4.Symuluj));
+            Thread thread5 = new Thread(new ThreadStart(miasto5.Symuluj));
+            thread1.Start();
+            thread2.Start();
+            thread3.Start();
+            thread4.Start();
+            thread5.Start();
+
+
 
             Thread.MemoryBarrier();
 

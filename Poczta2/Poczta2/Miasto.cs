@@ -63,12 +63,12 @@ namespace Poczta2
 
         public void Symuluj()
         {
-            //while (DateTime.Now.Minute % 10 != 1);
+            while (DateTime.Now.Minute % 10 != 1);
             while (true)
             {
                 time = DateTime.Now;
 
-                if (/*(time.Minute % 10 == 1) &&*/!dziewiata)// jest 9 otwieramy poczte
+                if ((time.Minute % 10 == 1) && !dziewiata)// jest 9 otwieramy poczte
                 {
                     siedemnasta = false;
                     szesnasta = false;
@@ -81,13 +81,66 @@ namespace Poczta2
                         threads.Last().Start();
                     }
 
-                    //kierowniczka.DostawczakiDoRozladunku = dostawczakiDoRozladowania;
                     kier.Start();
                 }
 
+                if ((time.Minute % 10 == 5) && !szesnasta)// jest 16:30 przyjezdzaja dostawczaki do 
+                {
+                    foreach (var m in miasta)
+                    {
+                        if (m.nazwa != nazwa)
+                        {
+                            kierowniczka.dostawczakiDoZaladunku.Add(new Dostawczak());
+                            kierowniczka.dostawczakiDoZaladunku.Last().miasto = m.nazwa;
+                        }
+                    }
+                    szesnasta = true;
+                }
+
+                if ((time.Minute % 10 == 6) && !siedemnasta)
+                {
+                    kierowniczka.zamknij = true;
+                    foreach (Thread thread in threads)
+                    {
+                        thread.Join();
+                    }
+                    kierowniczka.koniec = true;
+                    foreach(var k in miasta)
+                    {
+                        k.kier.Join();
+                    }
+                    pracownicy.Clear();
+                    klienci.Clear();
+
+                    siedemnasta = true;
+                    szesnasta = false;
+                    dziewiata = false;
+
+                    foreach (var samochod in dostawczakiDoZaladunku)
+                    {
+                        lock (miasta)
+                        {
+                            miasta.Find(x => x.nazwa == samochod.miasto).dostawczakiDoRozladunku.Add(samochod);
+                        }
+                    }
+
+                    Thread.MemoryBarrier();
+
+                    dostawczakiDoZaladunku.Clear();
+                    for (int i = 0; i < skrzynki.Length; i++)
+                    {
+                        if(skrzynki[i].miasto==nazwa)
+                        {
+                            skrzynki[i].zaladunek.Clear();
+                        }
+                    }
+                    //skrzynki.Find(x => x.miasto == nazwa).zaladunek.Clear();
+
+                    //Console.WriteLine("zamkniete");
+                }
 
 
-                if ((rnd.Next(10) == 0) && (time.Minute % 10 > 0) && (time.Minute % 10 < 10))
+                if ((rnd.Next(10) == 0) && (time.Minute % 10 > 0) && (time.Minute % 10 < 6))
                 {
                     mutKlienci.WaitOne();
                     klienci.Enqueue(new Klient());

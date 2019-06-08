@@ -17,6 +17,8 @@ namespace Poczta2
         public Skrzynka[] skrzynki;
         public List<Dostawczak> dostawczakiDoZaladunku = new List<Dostawczak>();
         public List<Dostawczak> dostawczakiDoRozladunku = new List<Dostawczak>();
+        public bool zamknij = false;
+        public bool koniec = false;
 
         public Kierowniczka(Okienko[] oki, Skrzynka[] skr)
         {
@@ -164,12 +166,38 @@ namespace Poczta2
 
         public void Czuwaj()
         {
-            while(true)
+            while(!koniec)
             {
-                SprawdzKolejke();
-                SprawdzCzySortowac();
-                SprawdzCzyZaladowac();
-                SprawdzCzyRozladowac();
+                if(zamknij)
+                {
+                    if(dostawczakiDoRozladunku.Any(x => x.zaladunek.Count !=0))
+                    {
+                        SprawdzCzyRozladowac();
+                    }
+                    else
+                    {
+                        dostawczakiDoRozladunku.Clear();
+                        foreach (var prac in pracownicy)
+                        {
+                            prac.coMaszRobic = Zajety.zamknij;
+                        }
+                    }
+                }
+                else
+                {
+                    SprawdzKolejke();
+                    SprawdzCzySortowac();
+                    SprawdzCzyZaladowac();
+                    SprawdzCzyRozladowac();
+                    if(dostawczakiDoRozladunku.Count !=0)
+                    {
+                        if (dostawczakiDoRozladunku.All(x => x.zaladunek.Count == 0))
+                        {
+                            dostawczakiDoRozladunku.Clear();
+                        }
+                    }
+                    
+                }
             }
             
         }
