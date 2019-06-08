@@ -16,6 +16,7 @@ namespace Poczta2
         public Skrzynka[] skrzynki;
         public Okienko[] okienka;
         public Mutex mutSorto = new Mutex();
+        public Mutex mutKlienci = new Mutex();
         public List<Pracownik> pracownicy = new List<Pracownik>();
         public List<Thread> threads = new List<Thread>();
         public Kierowniczka kierowniczka;
@@ -26,6 +27,8 @@ namespace Poczta2
         Random rnd = new Random();
         DateTime time = new DateTime();
         bool dziewiata = false;
+        bool szesnasta = false;
+        bool siedemnasta = false;
 
         public Miasto(char nazwa, int iloscOkienek, int iloscMiast)
         {
@@ -42,6 +45,57 @@ namespace Poczta2
             for(int i=0; i<iloscOkienek; i++)
             {
                 okienka[i] = new Okienko();
+            }
+
+            kierowniczka = new Kierowniczka(okienka, skrzynki);
+            kierowniczka.pracownicy = pracownicy;
+            kierowniczka.miasto = nazwa;
+            kierowniczka.klienci = klienci;
+            kierowniczka.dostawczakiDoRozladunku = dostawczakiDoRozladunku;
+            kierowniczka.dostawczakiDoZaladunku = dostawczakiDoZaladunku;
+
+            kier = new Thread(new ThreadStart(kierowniczka.Czuwaj));
+            lock(miasta)
+            {
+                miasta.Add(this);
+            }
+        }
+
+        public void Symuluj()
+        {
+            while (DateTime.Now.Minute % 10 != 4);
+            while (true)
+            {
+                time = DateTime.Now;
+
+                if ((time.Minute % 10 == 4) && !dziewiata)// jest 9 otwieramy poczte
+                {
+                    siedemnasta = false;
+                    szesnasta = false;
+                    dziewiata = true;
+                    int ilosc = rnd.Next(3, 8);
+                    for (int i = 0; i < ilosc; i++)
+                    {
+                        pracownicy.Add(new Pracownik(klienci, mutKlienci, mutSorto, skrzynki, okienka));
+                        threads.Add(new Thread(new ThreadStart(pracownicy.Last().Pracuj)));
+                        threads.Last().Start();
+                    }
+
+                    //kierowniczka.DostawczakiDoRozladunku = dostawczakiDoRozladowania;
+                    kier.Start();
+                }
+
+
+
+                if ((rnd.Next(10) == 0) && (time.Minute % 10 > 0) && (time.Minute % 10 < 6))
+                {
+                    mutKlienci.WaitOne();
+                    klienci.Enqueue(new Klient());
+                    mutKlienci.ReleaseMutex();
+                }
+
+                Thread.Sleep(200);
+
             }
         }
 

@@ -20,6 +20,14 @@ namespace Poczta2
         public Dostawczak dostawczakDoZaladunku;
         public Dostawczak dostawczakDoRozladunku;
 
+        public Pracownik(Queue<Klient> klienci, Mutex mutKlienci, Mutex mutSort, Skrzynka[] skrzynki, Okienko[] okienka)
+        {
+            this.klienci = klienci;
+            this.mutKlienci = mutKlienci;
+            this.mutSort = mutSort;
+            this.skrzynki = skrzynki;
+            this.okienka = okienka;
+        }
 
         public void PrzyjmijPrzesylke()
         {
@@ -50,10 +58,14 @@ namespace Poczta2
 
         public void ZamknijOkienko()
         {
-            okienko.zajete = false;
-            Thread.MemoryBarrier();
-            okienko = null;
-            coMaszRobic = Zajety.wolny;
+            if(okienko!=null)
+            {
+                okienko.zajete = false;
+                Thread.MemoryBarrier();
+                okienko = null;
+                Thread.MemoryBarrier();
+                coMaszRobic = Zajety.wolny;
+            }
         }
 
         public void Sortuj()
@@ -163,6 +175,9 @@ namespace Poczta2
                         break;
                     case Zajety.rozladowuje:
                         RozladujDostawczak();
+                        break;
+                    case Zajety.wolny:
+                        ZamknijOkienko();
                         break;
                     default:
                         break;
