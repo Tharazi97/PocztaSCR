@@ -9,6 +9,7 @@ namespace Poczta2
 {
     class Kierowniczka
     {
+        public char miasto;
         public List<Pracownik> pracownicy;
         public Queue<Klient> klienci;
         public Okienko[] okienka;
@@ -106,17 +107,20 @@ namespace Poczta2
                 {
                     for (int i = 0; i < skrzynki.Length; i++)
                     {
-                        if (skrzynki[i].zaladunek.Count != 0)
+                        if(skrzynki[i].miasto!=miasto)
                         {
-                            try
+                            if (skrzynki[i].zaladunek.Count != 0)
                             {
-                                tymczasowy.skrzynkaDoRozladunku = skrzynki[i];
-                                tymczasowy.dostawczakDoZaladunku = dostawczakiDoZaladunku.Find(x => x.miasto == skrzynki[i].miasto);
-                                Thread.MemoryBarrier();
-                                tymczasowy.coMaszRobic = Zajety.laduje;
+                                try
+                                {
+                                    tymczasowy.skrzynkaDoRozladunku = skrzynki[i];
+                                    tymczasowy.dostawczakDoZaladunku = dostawczakiDoZaladunku.Find(x => x.miasto == skrzynki[i].miasto);
+                                    Thread.MemoryBarrier();
+                                    tymczasowy.coMaszRobic = Zajety.laduje;
+                                }
+                                finally { }
+                                break;
                             }
-                            finally { }
-                            break;
                         }
                     }
                 }

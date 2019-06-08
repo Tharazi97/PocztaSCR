@@ -37,8 +37,8 @@ namespace Poczta2
             dostawczaks.Last().miasto = 'C';
             dostawczaks.Add(new Dostawczak());
             dostawczaks.Last().miasto = 'D';
-            dostawczaks.Add(new Dostawczak());
-            dostawczaks.Last().miasto = 'E';
+            //dostawczaks.Add(new Dostawczak());
+            //dostawczaks.Last().miasto = 'E';
 
             Skrzynka[] skrzynkas = { new Skrzynka(), new Skrzynka(), new Skrzynka(), new Skrzynka(), new Skrzynka() };
             skrzynkas[0].miasto = 'A';
@@ -93,11 +93,20 @@ namespace Poczta2
             kierowniczka.pracownicy = pracowniks;
             kierowniczka.klienci = klients;
             kierowniczka.dostawczakiDoZaladunku = dostawczaks;
+            kierowniczka.miasto = 'E';
             Thread kier = new Thread(new ThreadStart(kierowniczka.Czuwaj));
             kier.Start();
             Random rnd = new Random();
-            while(true)
+            DateTime time = new DateTime();
+            bool dziewiata = false;
+            while (true)
             {
+                //time = DateTime.Now;
+                //if ((time.Minute % 10 == 1) && !dziewiata)
+                //{
+                //    kierowniczka.dostawczakiDoZaladunku = dostawczaks;
+                //}
+
                 Thread.Sleep(100);
                 if (rnd.Next(15) == 0)
                     klients.Enqueue(new Klient());
@@ -117,8 +126,8 @@ namespace Poczta2
                 else
                     Console.Write(" S3(z):");
 
-                Console.Write(" " + okienka[0].skrzynka.Count + " " + okienka[1].skrzynka.Count + " " + skrzynkas[0].zaladunek.Count);
-                Console.WriteLine(" A:" + dostawczaks.ElementAt(0).zaladunek.Count + " B:" + dostawczaks.ElementAt(1).zaladunek.Count);
+                Console.WriteLine(" " + okienka[0].skrzynka.Count + " " + okienka[1].skrzynka.Count + " " + skrzynkas[0].zaladunek.Count);
+                //Console.WriteLine(" A:" + dostawczaks.ElementAt(0).zaladunek.Count + " B:" + dostawczaks.ElementAt(1).zaladunek.Count);
 
             }
             Console.ReadKey();
