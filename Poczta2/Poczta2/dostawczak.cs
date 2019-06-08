@@ -7,10 +7,10 @@ using System.Threading;
 
 namespace Poczta2
 {
-    class Skrzynka
+    class Dostawczak
     {
         public char miasto;
         public Queue<Przesylka> zaladunek = new Queue<Przesylka>();
-        public Mutex mutSkrz = new Mutex();
+        public Mutex mutDos = new Mutex();
     }
 }

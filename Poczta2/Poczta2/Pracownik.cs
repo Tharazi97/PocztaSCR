@@ -16,6 +16,8 @@ namespace Poczta2
         public Skrzynka[] skrzynki;
         public volatile Zajety coMaszRobic = Zajety.wolny;
         public Mutex mutSort;
+        public Skrzynka skrzynkaDoRozladunku;
+        public Dostawczak dostawczakDoZaladunku;
 
 
         public void PrzyjmijPrzesylke()
@@ -77,7 +79,9 @@ namespace Poczta2
                 {
                     if (skrzynki[i].miasto == tymczasowa.miasto)
                     {
+                        skrzynki[i].mutSkrz.WaitOne();
                         skrzynki[i].zaladunek.Enqueue(tymczasowa);
+                        skrzynki[i].mutSkrz.ReleaseMutex();
                         break;
                     }
                 }
@@ -90,6 +94,30 @@ namespace Poczta2
             }
             
             
+        }
+
+        public void LadujDostawczak()
+        {
+            Przesylka tymczasowa;
+            skrzynkaDoRozladunku.mutSkrz.WaitOne();
+            if(skrzynkaDoRozladunku.zaladunek.Count!=0)
+            {
+                tymczasowa = skrzynkaDoRozladunku.zaladunek.Dequeue();
+                Thread.Sleep(100);
+                skrzynkaDoRozladunku.mutSkrz.ReleaseMutex();
+
+                Thread.Sleep(100 + (int)(tymczasowa.masa * 30));
+
+                dostawczakDoZaladunku.mutDos.WaitOne();
+                dostawczakDoZaladunku.zaladunek.Enqueue(tymczasowa);
+                dostawczakDoZaladunku.mutDos.ReleaseMutex();
+            }
+            else
+            {
+                skrzynkaDoRozladunku.mutSkrz.ReleaseMutex();
+                coMaszRobic = Zajety.wolny;
+            }
+
         }
 
         public void Pracuj()
@@ -106,6 +134,9 @@ namespace Poczta2
                         break;
                     case Zajety.sortuje:
                         Sortuj();
+                        break;
+                    case Zajety.laduje:
+                        LadujDostawczak();
                         break;
                     default:
                         break;

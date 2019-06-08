@@ -14,6 +14,7 @@ namespace Poczta2
         public Okienko[] okienka;
         public int otwarteOkienka = 0;
         public Skrzynka[] skrzynki;
+        public List<Dostawczak> dostawczakiDoZaladunku = new List<Dostawczak>();
 
         public Kierowniczka(Okienko[] oki, Skrzynka[] skr)
         {
@@ -25,17 +26,17 @@ namespace Poczta2
         {
             if ((klienci.Count / 3.0f <= okienka.Count()) && (klienci.Count / 3.0f > otwarteOkienka) && (pracownicy.Count() > otwarteOkienka))
             {
-                Console.WriteLine("probuje otworzyc");
+                //Console.WriteLine("probuje otworzyc");
                 Pracownik tymczasowy = pracownicy.Find(x => x.coMaszRobic != Zajety.przyjmuje && x.coMaszRobic != Zajety.zamknijOkienko);
                 if (tymczasowy != null)
                 {
                     if(okienka[otwarteOkienka].zajete== true)
                     {
-                        Console.WriteLine("musze poczekac");               
+                        //Console.WriteLine("musze poczekac");               
                     }
                     else
                     {
-                        Console.WriteLine("otworzylAM");
+                        //Console.WriteLine("otworzylAM");
                         okienka[otwarteOkienka].zajete = true;
                         tymczasowy.okienko = okienka[otwarteOkienka];
                         Thread.MemoryBarrier();
@@ -50,11 +51,11 @@ namespace Poczta2
                 {
                     if (okienka[i].zajete == false)
                     {
-                        Console.WriteLine("probuje otworzyc2");
+                        //Console.WriteLine("probuje otworzyc2");
                         Pracownik tymczasowy = pracownicy.Find(x => x.coMaszRobic != Zajety.przyjmuje && x.coMaszRobic != Zajety.zamknijOkienko);
                         if (tymczasowy != null)
                         {
-                            Console.WriteLine("otworzylAM2");
+                            //Console.WriteLine("otworzylAM2");
                             okienka[otwarteOkienka].zajete = true;
                             tymczasowy.okienko = okienka[otwarteOkienka];
                             Thread.MemoryBarrier();
@@ -66,11 +67,11 @@ namespace Poczta2
             }
             if ((klienci.Count() < otwarteOkienka) && (otwarteOkienka > 0))
             {
-                Console.WriteLine("probuje zamknac");
+                //Console.WriteLine("probuje zamknac");
                 Pracownik tymczasowy = pracownicy.Find(x => x.okienko == okienka[otwarteOkienka - 1]);
                 if (tymczasowy != null)
                 {
-                    Console.WriteLine("zamknelam");
+                    //Console.WriteLine("zamknelam");
                     tymczasowy.coMaszRobic = Zajety.zamknijOkienko;
                     otwarteOkienka--;
                 }
@@ -95,12 +96,42 @@ namespace Poczta2
             
         }
 
+        public void SprawdzCzyZaladowac()
+        {
+            //Console.WriteLine("sprawdzam czy zaladowac");
+            if(dostawczakiDoZaladunku.Count!=0)
+            {
+                Pracownik tymczasowy = pracownicy.Find(x => x.coMaszRobic != Zajety.przyjmuje && x.coMaszRobic != Zajety.zamknijOkienko && x.coMaszRobic != Zajety.laduje);
+                if (tymczasowy != null)
+                {
+                    for (int i = 0; i < skrzynki.Length; i++)
+                    {
+                        if (skrzynki[i].zaladunek.Count != 0)
+                        {
+                            try
+                            {
+                                tymczasowy.skrzynkaDoRozladunku = skrzynki[i];
+                                tymczasowy.dostawczakDoZaladunku = dostawczakiDoZaladunku.Find(x => x.miasto == skrzynki[i].miasto);
+                                Thread.MemoryBarrier();
+                                tymczasowy.coMaszRobic = Zajety.laduje;
+                            }
+                            finally { }
+                            break;
+                        }
+                    }
+                }
+            }
+            
+
+        }
+
         public void Czuwaj()
         {
             while(true)
             {
                 SprawdzKolejke();
                 SprawdzCzySortowac();
+                SprawdzCzyZaladowac();
             }
             
         }

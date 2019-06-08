@@ -28,6 +28,18 @@ namespace Poczta2
                 klients.Enqueue(new Klient());
             }
 
+            List<Dostawczak> dostawczaks = new List<Dostawczak>();
+            dostawczaks.Add(new Dostawczak());
+            dostawczaks.Last().miasto = 'A';
+            dostawczaks.Add(new Dostawczak());
+            dostawczaks.Last().miasto = 'B';
+            dostawczaks.Add(new Dostawczak());
+            dostawczaks.Last().miasto = 'C';
+            dostawczaks.Add(new Dostawczak());
+            dostawczaks.Last().miasto = 'D';
+            dostawczaks.Add(new Dostawczak());
+            dostawczaks.Last().miasto = 'E';
+
             Skrzynka[] skrzynkas = { new Skrzynka(), new Skrzynka(), new Skrzynka(), new Skrzynka(), new Skrzynka() };
             skrzynkas[0].miasto = 'A';
             skrzynkas[1].miasto = 'B';
@@ -80,6 +92,7 @@ namespace Poczta2
             Kierowniczka kierowniczka = new Kierowniczka(okienka, skrzynkas);
             kierowniczka.pracownicy = pracowniks;
             kierowniczka.klienci = klients;
+            kierowniczka.dostawczakiDoZaladunku = dostawczaks;
             Thread kier = new Thread(new ThreadStart(kierowniczka.Czuwaj));
             kier.Start();
             Random rnd = new Random();
@@ -104,7 +117,8 @@ namespace Poczta2
                 else
                     Console.Write(" S3(z):");
 
-                Console.WriteLine(" " + okienka[0].skrzynka.Count + " " + okienka[1].skrzynka.Count + " " + skrzynkas[0].zaladunek.Count);
+                Console.Write(" " + okienka[0].skrzynka.Count + " " + okienka[1].skrzynka.Count + " " + skrzynkas[0].zaladunek.Count);
+                Console.WriteLine(" A:" + dostawczaks.ElementAt(0).zaladunek.Count + " B:" + dostawczaks.ElementAt(1).zaladunek.Count);
 
             }
             Console.ReadKey();
