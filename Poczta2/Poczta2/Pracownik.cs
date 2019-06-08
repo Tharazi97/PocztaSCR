@@ -18,7 +18,7 @@ namespace Poczta2
         public Mutex mutSort;
         public Skrzynka skrzynkaDoRozladunku;
         public Dostawczak dostawczakDoZaladunku;
-        public Dostawczak DostawczakDoRozladunku;
+        public Dostawczak dostawczakDoRozladunku;
 
 
         public void PrzyjmijPrzesylke()
@@ -116,6 +116,9 @@ namespace Poczta2
             else
             {
                 skrzynkaDoRozladunku.mutSkrz.ReleaseMutex();
+                skrzynkaDoRozladunku = null;
+                dostawczakDoZaladunku = null;
+                Thread.MemoryBarrier();
                 coMaszRobic = Zajety.wolny;
             }
 
@@ -123,24 +126,26 @@ namespace Poczta2
 
         public void RozladujDostawczak()
         {
-            DostawczakDoRozladunku.mutDos.WaitOne();
-            if(DostawczakDoRozladunku.zaladunek.Count!=0)
+            dostawczakDoRozladunku.mutDos.WaitOne();
+            if(dostawczakDoRozladunku.zaladunek.Count!=0)
             {
                 Thread.Sleep(100);
-                Przesylka tymczasowa = DostawczakDoRozladunku.zaladunek.Dequeue();
-                DostawczakDoRozladunku.mutDos.ReleaseMutex();
+                Przesylka tymczasowa = dostawczakDoRozladunku.zaladunek.Dequeue();
+                dostawczakDoRozladunku.mutDos.ReleaseMutex();
                 Thread.Sleep(100 + (int)(tymczasowa.masa * 10));
             }
             else
             {
-                DostawczakDoRozladunku.mutDos.ReleaseMutex();
+                dostawczakDoRozladunku.mutDos.ReleaseMutex();
+                dostawczakDoRozladunku = null;
+                Thread.MemoryBarrier();
                 coMaszRobic = Zajety.wolny;
             }
         }
 
         public void Pracuj()
         {
-            while(true)
+            while(coMaszRobic != Zajety.zamknij)
             {
                 switch (coMaszRobic)
                 {

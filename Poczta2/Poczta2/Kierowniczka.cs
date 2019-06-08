@@ -143,7 +143,7 @@ namespace Poczta2
                         {
                             try
                             {
-                                tymczasowy.DostawczakDoRozladunku = dost;
+                                tymczasowy.dostawczakDoRozladunku = dost;
                                 Thread.MemoryBarrier();
                                 tymczasowy.coMaszRobic = Zajety.rozladowuje;
                             }
