@@ -14,6 +14,6 @@ namespace Poczta2
         public Klient klient;
         public UInt32 klientID = 0;
         public bool zajete = false;
-        public int ID;
+        //public int ID;
     }
 }

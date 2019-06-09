@@ -63,12 +63,12 @@ namespace Poczta2
 
         public void Symuluj()
         {
-            while (DateTime.Now.Minute % 10 != 2);
+            while (DateTime.Now.Minute % 10 != 0);
             while (true)
             {
                 time = DateTime.Now;
 
-                if ((time.Minute % 10 == 2) && !dziewiata)// jest 9 otwieramy poczte
+                if ((time.Minute % 10 == 0) && !dziewiata)// jest 9 otwieramy poczte
                 {
                     kierowniczka.koniec = false;
                     kierowniczka.zamknij = false;
@@ -87,7 +87,7 @@ namespace Poczta2
                     kier.Start();
                 }
 
-                if ((time.Minute % 10 == 5) && !szesnasta)// jest 16:30 przyjezdzaja dostawczaki do 
+                if ((time.Minute % 10 == 7) && !szesnasta)// jest 16:30 przyjezdzaja dostawczaki do 
                 {
                     foreach (var m in miasta)
                     {
@@ -100,7 +100,7 @@ namespace Poczta2
                     szesnasta = true;
                 }
 
-                if ((time.Minute % 10 == 6) && !siedemnasta)
+                if ((time.Minute % 10 == 9) && !siedemnasta)// siedemnasta, zamykamy poczte
                 {
                     kierowniczka.zamknij = true;
                     foreach (Thread thread in threads)
@@ -146,7 +146,13 @@ namespace Poczta2
                 }
 
 
-                if ((rnd.Next(6) == 0) && (time.Minute % 10 > 0) && (time.Minute % 10 < 6))
+                if ((rnd.Next(3) == 0) && (time.Minute % 10 > 4) && (time.Minute % 10 < 7))//godziny szczytu
+                {
+                    mutKlienci.WaitOne();
+                    klienci.Enqueue(new Klient());
+                    mutKlienci.ReleaseMutex();
+                }
+                if ((rnd.Next(8) == 0) && (((time.Minute % 10 >= 0) && (time.Minute % 10 <= 4))|| ((time.Minute % 10 >= 7) && (time.Minute % 10 < 9))))//mniejszy ruch
                 {
                     mutKlienci.WaitOne();
                     klienci.Enqueue(new Klient());

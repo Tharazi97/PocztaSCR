@@ -179,7 +179,7 @@ namespace Poczta2
                 if(miasto1.kierowniczka.dostawczakiDoZaladunku.Count==4)
                     Console.Write(" OUT:" + miasto1.dostawczakiDoZaladunku.ElementAt(0).miasto + ":" + miasto1.dostawczakiDoZaladunku.ElementAt(0).zaladunek.Count +" "+ miasto1.dostawczakiDoZaladunku.ElementAt(1).miasto + ":" + miasto1.dostawczakiDoZaladunku.ElementAt(1).zaladunek.Count + " " + miasto1.dostawczakiDoZaladunku.ElementAt(2).miasto + ":" + miasto1.dostawczakiDoZaladunku.ElementAt(2).zaladunek.Count + " " + miasto1.dostawczakiDoZaladunku.ElementAt(3).miasto + ":" + miasto1.dostawczakiDoZaladunku.ElementAt(3).zaladunek.Count);
                 if (miasto1.kierowniczka.dostawczakiDoRozladunku.Count == 4)
-                    Console.Write(" 1:" + miasto1.dostawczakiDoRozladunku.ElementAt(0).zaladunek.Count + " 2:" + miasto1.dostawczakiDoRozladunku.ElementAt(1).zaladunek.Count + " 3:" + miasto1.dostawczakiDoRozladunku.ElementAt(2).zaladunek.Count + " 4:" + miasto1.dostawczakiDoRozladunku.ElementAt(3).zaladunek.Count);
+                    Console.Write(" IN: 1:" + miasto1.dostawczakiDoRozladunku.ElementAt(0).zaladunek.Count + " 2:" + miasto1.dostawczakiDoRozladunku.ElementAt(1).zaladunek.Count + " 3:" + miasto1.dostawczakiDoRozladunku.ElementAt(2).zaladunek.Count + " 4:" + miasto1.dostawczakiDoRozladunku.ElementAt(3).zaladunek.Count);
                 Console.WriteLine();
             }
             Console.ReadKey();
