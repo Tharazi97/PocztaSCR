@@ -142,7 +142,11 @@ namespace Poczta2
 
                     //Console.WriteLine("zamkniete");
                     Klient.ilosc = 0;
-
+                    for(int i=0; i<okienka.Length;i++)
+                    {
+                        okienka[i].zajete = false;
+                    }
+                    kierowniczka.otwarteOkienka = 0;
                 }
 
 
